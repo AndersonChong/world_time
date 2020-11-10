@@ -6,18 +6,6 @@ class Location extends StatefulWidget {
 }
 
 class _LocationState extends State<Location> {
-  void getData() {
-    Future.delayed(Duration(seconds: 3), () {
-      print('Kittens');
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getData();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
