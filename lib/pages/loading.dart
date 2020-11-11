@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-import 'dart:convert';
+import 'package:world_time/services/world_time.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Loading extends StatefulWidget {
   @override
@@ -8,37 +8,33 @@ class Loading extends StatefulWidget {
 }
 
 class _LoadingState extends State<Loading> {
-  void getData() async {
-    Response response =
-        await get('http://worldtimeapi.org/api/timezone/Asia/Seoul');
-    Map data = jsonDecode(response.body);
-
-    String dateTime = data['utc_datetime'];
-    String offset = data['utc_offset'].substring(1, 3);
-    print(dateTime);
-
-    DateTime now = DateTime.parse(dateTime);
-    now = now.add(Duration(hours: int.parse(offset)));
-    print(now);
-
-    // print(dateTime + offset);
+  void setupWorldTime() async {
+    WorldTime instance =
+        WorldTime(location: 'Seoul', flag: 'seoul_flag.png', url: 'Asia/Seoul');
+    await instance.getData();
+    Navigator.pushReplacementNamed(context, '/home', arguments: {
+      'location': instance.location,
+      'flag': instance.flag,
+      'time': instance.time,
+      'isDaytime': instance.isDaytime,
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    getData();
+    setupWorldTime();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Loading page'),
-        centerTitle: true,
-        backgroundColor: Colors.amberAccent,
+      body: Center(
+        child: SpinKitWave(
+          color: Colors.blue[900],
+          size: 50.0,
+        ),
       ),
-      body: Text('this is the loading page'),
     );
   }
 }
